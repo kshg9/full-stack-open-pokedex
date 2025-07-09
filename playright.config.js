@@ -3,7 +3,7 @@ const { defineConfig } = require('@playwright/test')
 
 module.exports = defineConfig({
   testDir: './e2e-tests',
-  testIgnore: ['.tests/**'],
+  testIgnore: ['.test/**'],
   webServer: {
     command: 'npm run start-prod',
     port: 5000,
