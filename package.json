@@ -9,7 +9,7 @@
     "test": "jest",
     "eslint": "eslint './**/*.{js,jsx}'",
     "build": "webpack --mode production",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test firefox"
   },
   "repository": {
     "type": "git",
@@ -57,6 +57,8 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "testPathIgnorePatterns": ["e2e-tests"]
+    "testPathIgnorePatterns": [
+      "e2e-tests"
+    ]
   }
 }
