@@ -44,4 +44,3 @@ jobs:
           IS_PUSH: ${{ github.event_name == 'push' }}
           IS_PR: ${{ github.event_name == 'pull_request' }}
           CAN_DEPLOY: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
-
