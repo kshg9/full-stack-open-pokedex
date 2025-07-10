@@ -1,25 +1,46 @@
-name: Bump version
+name: Deployment pipeline
+
 on:
+  push:
+    branches: [main]
   pull_request:
-    types:
-      - closed
-    branches:
-      - master
+    branches: [main]
+    types: [opened, synchronize]
 
 jobs:
-  build:
-    if: github.event.pull_request.merged == true
+  simple_deployment_pipeline:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: '0'
 
-    - name: Bump version and push tag
-      uses: anothrNick/github-tag-action@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        TAG_PREFIX: v
-        DEFAULT_BUMP: patch
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install deps
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Dummy Deploy
+        if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
+
+        run: echo "🚀 Dummy deploying to production..."
+
+  tag_release:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.64.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+          SHOULD_SKIP: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
+          IS_PUSH: ${{ github.event_name == 'push' }}
+          IS_PR: ${{ github.event_name == 'pull_request' }}
+          CAN_DEPLOY: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
