@@ -1,9 +1,6 @@
 name: Health Check
 
 on:
-  schedule:
-    # ⏱ Every 1 minute — for testing ONLY
-    - cron: '*/1 * * * *'
   workflow_dispatch: # 🔧 allows manual trigger for debugging
 
 jobs:
