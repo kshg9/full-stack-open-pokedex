@@ -1,0 +1,19 @@
+name: Health Check
+
+on:
+  schedule:
+    # ⏱ Every 1 minute — for testing ONLY
+    - cron: '*/1 * * * *'
+  workflow_dispatch: # 🔧 allows manual trigger for debugging
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check health of deployed app
+        uses: Jtalk/url-health-check-action@v4
+        with:
+          url: 'https://full-stack-open-pokedex-2dwh.onrender.com/'
+          max-attempts: 3
+          retry-delay: 5
+          retry-all: true
