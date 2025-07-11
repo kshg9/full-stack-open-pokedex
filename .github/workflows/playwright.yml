@@ -28,30 +28,26 @@ jobs:
         path: playwright-report/
         retention-days: 30
 
-    # Notify on success
-    if: ${{ success() }}
-    steps:
-      - name: Send Discord success message
-        uses: Ilshidur/action-discord@master
-        with:
-          args: |
-            ✅ **Build succeeded**
-            Commit: ${{ github.sha }}
-            [View commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    - name: Send Discord success message
+      if: ${{ success() }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: |
+          ✅ **E2E tests succeeded**
+          Commit: ${{ github.sha }}
+          [View commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
-    # Notify on failure
-    if: ${{ failure() }}
-    steps:
-      - name: Send Discord failure message
-        uses: Ilshidur/action-discord@master
-        with:
-          args: |
-            ❌ **Build failed**
-            Commit: ${{ github.sha }}
-            Author: ${{ github.actor }}
-            Message: "${{ github.event.head_commit.message }}"
-            [View commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    - name: Send Discord failure message
+      if: ${{ failure() }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: |
+          ❌ **E2E tests failed**
+          Commit: ${{ github.sha }}
+          Author: ${{ github.actor }}
+          Message: "${{ github.event.head_commit.message }}"
+          [View commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
